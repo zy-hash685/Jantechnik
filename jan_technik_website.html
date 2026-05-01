@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jan Technik – Reparatur & An- und Verkauf | Lippstadt</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --blue-dark: #1a3a6b; --blue-mid: #2563b0; --blue-light: #4a90d9;
+    --green-accent: #4caf7d; --green-dark: #2e7d5a; --gold: #f5a623;
+    --text-dark: #1a1a2e; --text-mid: #3a3a5c; --text-light: #6b7280;
+    --bg-light: #f4f7fb; --white: #ffffff;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Barlow', sans-serif; color: var(--text-dark); background: var(--white); line-height: 1.6; }
+
+  /* COOKIE BANNER */
+  #cookie-banner {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 9999;
+    background: #111827; color: rgba(255,255,255,0.9);
+    padding: 1.2rem 2.5rem; display: flex; align-items: center;
+    justify-content: space-between; gap: 1.5rem; flex-wrap: wrap;
+    border-top: 3px solid var(--green-accent);
+    transform: translateY(100%); transition: transform 0.45s cubic-bezier(.4,0,.2,1);
+  }
+  #cookie-banner.visible { transform: translateY(0); }
+  #cookie-banner p { font-size: 0.87rem; flex: 1; min-width: 240px; line-height: 1.65; }
+  #cookie-banner p a { color: var(--green-accent); text-decoration: underline; cursor: pointer; }
+  .cookie-btns { display: flex; gap: 0.7rem; flex-shrink: 0; flex-wrap: wrap; }
+  .btn-c-ok {
+    background: var(--green-accent); color: white; border: none; cursor: pointer;
+    padding: 0.6rem 1.5rem; border-radius: 5px;
+    font-family: 'Barlow Condensed', sans-serif; font-size: 0.95rem;
+    font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+    transition: background 0.2s;
+  }
+  .btn-c-ok:hover { background: var(--green-dark); }
+  .btn-c-min {
+    background: transparent; color: rgba(255,255,255,0.65);
+    border: 1px solid rgba(255,255,255,0.3); cursor: pointer;
+    padding: 0.6rem 1.2rem; border-radius: 5px;
+    font-family: 'Barlow Condensed', sans-serif; font-size: 0.95rem;
+    font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;
+    transition: all 0.2s;
+  }
+  .btn-c-min:hover { border-color: rgba(255,255,255,0.7); color: white; }
+
+  /* MODALS */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 8888;
+    background: rgba(10,20,50,0.72);
+    align-items: center; justify-content: center; padding: 1.5rem;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: white; border-radius: 14px; max-width: 680px; width: 100%;
+    max-height: 86vh; overflow-y: auto; padding: 2.4rem 2.6rem;
+    position: relative; box-shadow: 0 24px 64px rgba(0,0,0,0.32);
+  }
+  .modal-close-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; }
+  .modal-box h2 {
+    font-family: 'Barlow Condensed', sans-serif; font-size: 1.75rem;
+    font-weight: 800; color: var(--blue-dark);
+    border-bottom: 2px solid var(--green-accent); padding-bottom: 0.6rem;
+  }
+  .btn-close {
+    background: var(--blue-dark); color: white; border: none; cursor: pointer;
+    width: 32px; height: 32px; border-radius: 50%; font-size: 1rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: background 0.2s;
+  }
+  .btn-close:hover { background: var(--green-dark); }
+  .modal-box h3 {
+    font-family: 'Barlow Condensed', sans-serif; font-size: 1.05rem; font-weight: 700;
+    color: var(--blue-dark); margin: 1.3rem 0 0.35rem;
+    text-transform: uppercase; letter-spacing: 0.03em;
+  }
+  .modal-box p, .modal-box li { font-size: 0.89rem; color: var(--text-mid); line-height: 1.7; margin-bottom: 0.4rem; }
+  .modal-box ul { padding-left: 1.3rem; margin-bottom: 0.5rem; }
+  .modal-box a { color: var(--blue-mid); }
+
+  /* NAVBAR */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(255,255,255,0.97); border-bottom: 2px solid var(--blue-mid);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.6rem 4rem; box-shadow: 0 2px 16px rgba(26,58,107,0.10);
+  }
+  .nav-logo img { height: 54px; width: auto; object-fit: contain; }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    font-family: 'Barlow Condensed', sans-serif; font-size: 1.05rem; font-weight: 600;
+    letter-spacing: 0.04em; text-decoration: none; color: var(--blue-dark);
+    text-transform: uppercase; transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--green-accent); }
+  .nav-cta { background: var(--green-accent); color: white !important; padding: 0.4rem 1.2rem; border-radius: 4px; }
+  .nav-cta:hover { background: var(--green-dark) !important; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue-mid) 55%, var(--blue-light) 100%);
+    display: flex; align-items: center; justify-content: center;
+    text-align: center; padding: 7rem 2rem 4rem; position: relative; overflow: hidden;
+  }
+  .hero-inner { position: relative; z-index: 1; max-width: 760px; }
+  .hero-logo {
+    background: rgba(255,255,255,0.12); border-radius: 16px;
+    padding: 1.2rem 2rem; display: inline-block; margin-bottom: 2.2rem;
+    border: 1px solid rgba(255,255,255,0.18);
+  }
+  .hero-logo img { height: 80px; width: auto; object-fit: contain; }
+  .hero h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: clamp(2.6rem, 6vw, 4.2rem); font-weight: 800; color: white;
+    line-height: 1.08; margin-bottom: 1.2rem;
+  }
+  .hero h1 span { color: var(--green-accent); }
+  .hero > .hero-inner > p { font-size: 1.15rem; font-weight: 300; color: rgba(255,255,255,0.82); max-width: 520px; margin: 0 auto 2.2rem; }
+  .hero-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--green-accent); color: white; padding: 0.85rem 2.2rem; border-radius: 6px;
+    font-family: 'Barlow Condensed', sans-serif; font-size: 1.05rem; font-weight: 700;
+    text-decoration: none; letter-spacing: 0.04em; text-transform: uppercase;
+    transition: background 0.2s, transform 0.15s; display: inline-block;
+  }
+  .btn-primary:hover { background: var(--green-dark); transform: translateY(-2px); }
+  .btn-outline {
+    background: transparent; color: white; border: 2px solid rgba(255,255,255,0.55);
+    padding: 0.85rem 2.2rem; border-radius: 6px;
+    font-family: 'Barlow Condensed', sans-serif; font-size: 1.05rem; font-weight: 700;
+    text-decoration: none; letter-spacing: 0.04em; text-transform: uppercase;
+    transition: border-color 0.2s, background 0.2s; display: inline-block;
+  }
+  .btn-outline:hover { border-color: white; background: rgba(255,255,255,0.10); }
+  .hero-badges { display: flex; gap: 1.4rem; justify-content: center; margin-top: 2.4rem; flex-wrap: wrap; }
+  .badge {
+    display: flex; align-items: center; gap: 0.5rem;
+    background: rgba(255,255,255,0.13); border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 50px; padding: 0.4rem 1.1rem; color: rgba(255,255,255,0.92); font-size: 0.88rem;
+  }
+  .badge-icon { width: 18px; height: 18px; background: var(--green-accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+  /* SECTIONS */
+  section { padding: 5rem 4rem; }
+  .section-label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--green-accent); margin-bottom: 0.5rem; }
+  .section-title { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 800; color: var(--blue-dark); line-height: 1.1; margin-bottom: 1rem; }
+  .section-sub { font-size: 1.05rem; color: var(--text-light); max-width: 520px; line-height: 1.7; }
+  .section-head { max-width: 1100px; margin: 0 auto 3rem; }
+
+  /* SERVICES */
+  .services { background: var(--bg-light); }
+  .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; max-width: 1100px; margin: 0 auto; }
+  .service-card { background: white; border-radius: 12px; padding: 2rem 1.5rem; border-left: 4px solid var(--blue-mid); box-shadow: 0 2px 18px rgba(26,58,107,0.07); transition: transform 0.18s, box-shadow 0.18s; }
+  .service-card:hover { transform: translateY(-4px); box-shadow: 0 8px 32px rgba(26,58,107,0.13); }
+  .service-card.green { border-left-color: var(--green-accent); }
+  .service-icon { font-size: 2.2rem; margin-bottom: 1rem; display: block; }
+  .service-card h3 { font-family: 'Barlow Condensed', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--blue-dark); margin-bottom: 0.5rem; text-transform: uppercase; }
+  .service-card p { font-size: 0.9rem; color: var(--text-light); line-height: 1.6; }
+
+  /* WHY */
+  .why { background: white; }
+  .why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; max-width: 1100px; margin: 0 auto; align-items: center; }
+  .why-list { list-style: none; display: flex; flex-direction: column; gap: 1.2rem; }
+  .why-item { display: flex; gap: 1rem; align-items: flex-start; }
+  .check { width: 28px; height: 28px; background: var(--green-accent); border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+  .check svg { width: 14px; height: 14px; stroke: white; fill: none; stroke-width: 2.5; }
+  .why-item-text strong { display: block; font-family: 'Barlow Condensed', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--blue-dark); text-transform: uppercase; }
+  .why-item-text span { font-size: 0.9rem; color: var(--text-light); }
+  .why-visual { background: linear-gradient(135deg, var(--blue-dark), var(--blue-mid)); border-radius: 16px; padding: 3rem 2rem; text-align: center; color: white; }
+  .stat-row { display: flex; gap: 1.5rem; justify-content: center; margin-bottom: 1.5rem; }
+  .stat { flex: 1; background: rgba(255,255,255,0.10); border-radius: 10px; padding: 1.2rem 0.8rem; border: 1px solid rgba(255,255,255,0.15); }
+  .stat-num { font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 800; color: var(--green-accent); display: block; }
+  .stat-label { font-size: 0.8rem; color: rgba(255,255,255,0.72); text-transform: uppercase; letter-spacing: 0.06em; }
+  .rating-stars { display: flex; justify-content: center; gap: 6px; margin-bottom: 0.5rem; }
+  .star { width: 20px; height: 20px; background: var(--gold); clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
+  .star.half { background: linear-gradient(to right, var(--gold) 50%, rgba(255,255,255,0.25) 50%); }
+
+  /* REVIEWS */
+  .reviews { background: var(--bg-light); }
+  .reviews-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; max-width: 1100px; margin: 0 auto; }
+  .review-card { background: white; border-radius: 12px; padding: 1.6rem; box-shadow: 0 2px 18px rgba(26,58,107,0.07); border-top: 3px solid var(--green-accent); }
+  .review-stars { display: flex; gap: 3px; margin-bottom: 0.8rem; }
+  .s { color: var(--gold); font-size: 1rem; }
+  .review-text { font-size: 0.92rem; color: var(--text-mid); line-height: 1.65; font-style: italic; margin-bottom: 1rem; }
+  .reviewer { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.9rem; color: var(--blue-dark); text-transform: uppercase; }
+  .review-date { font-size: 0.8rem; color: var(--text-light); }
+
+  /* CONTACT */
+  .contact { background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue-mid) 100%); color: white; }
+  .contact .section-title { color: white; }
+  .contact .section-label { color: var(--green-accent); }
+  .contact .section-sub { color: rgba(255,255,255,0.72); }
+  .contact-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; max-width: 1100px; margin: 0 auto; align-items: start; }
+  .contact-item { display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 1.4rem; }
+  .contact-icon { width: 40px; height: 40px; background: rgba(255,255,255,0.12); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.1rem; }
+  .contact-item-text strong { display: block; font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.55); margin-bottom: 2px; }
+  .contact-item-text span { font-size: 0.97rem; color: rgba(255,255,255,0.92); }
+  .contact-item-text a { color: var(--green-accent); text-decoration: none; font-size: 0.97rem; }
+  .hours-box { background: rgba(255,255,255,0.08); border-radius: 10px; padding: 1.4rem; border: 1px solid rgba(255,255,255,0.14); }
+  .hours-box h4 { font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--green-accent); margin-bottom: 0.9rem; }
+  .hours-row { display: flex; justify-content: space-between; font-size: 0.9rem; padding: 0.4rem 0; border-bottom: 1px solid rgba(255,255,255,0.08); color: rgba(255,255,255,0.82); }
+  .hours-row:last-child { border-bottom: none; }
+  .hours-row .day { color: rgba(255,255,255,0.55); }
+
+  /* FOOTER */
+  footer { background: var(--text-dark); color: rgba(255,255,255,0.5); text-align: center; padding: 2rem; font-size: 0.82rem; }
+  footer strong { color: rgba(255,255,255,0.8); }
+  .footer-links { margin-top: 0.9rem; display: flex; gap: 1.8rem; justify-content: center; flex-wrap: wrap; }
+  .footer-links a { color: var(--green-accent); text-decoration: none; font-size: 0.82rem; cursor: pointer; transition: opacity 0.2s; }
+  .footer-links a:hover { opacity: 0.75; text-decoration: underline; }
+  footer p { margin-top: 0.8rem; }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 0.6rem 1.2rem; }
+    .nav-links { display: none; }
+    section { padding: 3.5rem 1.4rem; }
+    .why-grid, .contact-inner { grid-template-columns: 1fr; gap: 2rem; }
+    #cookie-banner { flex-direction: column; padding: 1rem 1.2rem; }
+    .modal-box { padding: 1.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- COOKIE BANNER -->
+<div id="cookie-banner" role="dialog" aria-label="Cookie-Einwilligung" aria-modal="true">
+  <p>
+    Wir verwenden ausschließlich technisch notwendige Cookies für den Betrieb dieser Website.
+    Kein Tracking, keine Werbung. Mehr Infos in unserer
+    <a onclick="openModal('datenschutz')">Datenschutzerklärung</a>.
+  </p>
+  <div class="cookie-btns">
+    <button class="btn-c-min" onclick="declineCookies()">Nur notwendige</button>
+    <button class="btn-c-ok" onclick="acceptCookies()">Verstanden ✓</button>
+  </div>
+</div>
+
+<!-- DATENSCHUTZ MODAL -->
+<div class="modal-overlay" id="modal-datenschutz" onclick="closeOutside(event,'datenschutz')" role="dialog" aria-modal="true" aria-label="Datenschutzerklärung">
+  <div class="modal-box">
+    <div class="modal-close-row">
+      <h2>Datenschutzerklärung</h2>
+      <button class="btn-close" onclick="closeModal('datenschutz')" aria-label="Schließen">✕</button>
+    </div>
+    <h3>1. Verantwortlicher</h3>
+    <p>Jan Technik – Reparatur &amp; An- und Verkauf<br>Am Bernhardbrunnen 2, 59555 Lippstadt<br>Telefon: 01521 7845212</p>
+
+    <h3>2. Erhebung personenbezogener Daten</h3>
+    <p>Diese Website erhebt keine personenbezogenen Daten über Tracking-Tools, Analyse-Dienste oder Werbenetzwerke. Es werden ausschließlich technisch notwendige Cookies eingesetzt.</p>
+
+    <h3>3. Cookies</h3>
+    <p>Wir setzen lediglich ein technisches Cookie ein, das Ihre Cookie-Einwilligung speichert. Es enthält keine personenbezogenen Daten. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse am ordnungsgemäßen Betrieb der Website).</p>
+
+    <h3>4. Kontaktaufnahme per Telefon</h3>
+    <p>Wenn Sie uns anrufen, werden die übermittelten Daten (Name, Rückrufnummer) ausschließlich zur Bearbeitung Ihrer Anfrage gespeichert. Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO. Daten werden nach Erledigung gelöscht, sofern keine Aufbewahrungspflichten bestehen.</p>
+
+    <h3>5. Externe Links (Google Maps)</h3>
+    <p>Der „Route planen"-Button öffnet Google Maps als externen Dienst. Beim Aufruf gelten die <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Datenschutzrichtlinien von Google</a>. Wir haben keinen Einfluss auf die Datenverarbeitung durch Google.</p>
+
+    <h3>6. Serverprotokolle</h3>
+    <p>Beim Abruf dieser Website werden technische Zugriffsdaten (IP-Adresse, Datum/Uhrzeit, Browsertyp) automatisch im Serverprotokoll gespeichert. Diese dienen ausschließlich der Sicherheit und werden nach spätestens 7 Tagen gelöscht. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO.</p>
+
+    <h3>7. Ihre Rechte (Art. 15–21 DSGVO)</h3>
+    <ul>
+      <li>Auskunft über gespeicherte Daten (Art. 15)</li>
+      <li>Berichtigung unrichtiger Daten (Art. 16)</li>
+      <li>Löschung Ihrer Daten (Art. 17)</li>
+      <li>Einschränkung der Verarbeitung (Art. 18)</li>
+      <li>Widerspruch gegen die Verarbeitung (Art. 21)</li>
+      <li>Beschwerde bei der Landesbeauftragten für Datenschutz NRW</li>
+    </ul>
+    <p style="margin-top:0.6rem;">Kontakt zur Ausübung Ihrer Rechte: <a href="tel:015217845212">01521 7845212</a></p>
+
+    <h3>8. Stand</h3>
+    <p>Mai 2025. Wir behalten uns vor, diese Erklärung bei Bedarf zu aktualisieren.</p>
+  </div>
+</div>
+
+<!-- IMPRESSUM MODAL -->
+<div class="modal-overlay" id="modal-impressum" onclick="closeOutside(event,'impressum')" role="dialog" aria-modal="true" aria-label="Impressum">
+  <div class="modal-box">
+    <div class="modal-close-row">
+      <h2>Impressum</h2>
+      <button class="btn-close" onclick="closeModal('impressum')" aria-label="Schließen">✕</button>
+    </div>
+    <h3>Angaben gemäß § 5 TMG</h3>
+    <p><strong>Jan Technik</strong><br>Reparatur &amp; An- und Verkauf<br>Am Bernhardbrunnen 2<br>59555 Lippstadt</p>
+
+    <h3>Kontakt</h3>
+    <p>Telefon: <a href="tel:015217845212">01521 7845212</a></p>
+
+    <h3>Verantwortlich für den Inhalt (§ 55 Abs. 2 RStV)</h3>
+    <p>Jan Technik, Am Bernhardbrunnen 2, 59555 Lippstadt</p>
+
+    <h3>Haftungsausschluss</h3>
+    <p>Die Inhalte dieser Website wurden mit größtmöglicher Sorgfalt erstellt. Eine Gewähr für Richtigkeit, Vollständigkeit und Aktualität kann nicht übernommen werden. Als Diensteanbieter sind wir gemäß § 7 Abs. 1 TMG für eigene Inhalte verantwortlich.</p>
+
+    <h3>Haftung für Links</h3>
+    <p>Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren Inhalte wir keinen Einfluss haben. Für die Inhalte verlinkter Seiten ist stets der jeweilige Anbieter verantwortlich.</p>
+
+    <h3>Online-Streitbeilegung (OS)</h3>
+    <p>Die EU-Kommission stellt eine Plattform zur Online-Streitbeilegung bereit: <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener">ec.europa.eu/consumers/odr</a>. Wir sind nicht zur Teilnahme an einem Schlichtungsverfahren verpflichtet.</p>
+
+    <h3>Urheberrecht</h3>
+    <p>Die durch uns erstellten Inhalte und Werke auf dieser Seite unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung oder Verbreitung außerhalb der Grenzen des Urheberrechts bedarf der schriftlichen Zustimmung.</p>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-logo"><img src="Jan_technik.png" alt="Jan Technik Logo"></div>
+  <ul class="nav-links">
+    <li><a href="#services">Leistungen</a></li>
+    <li><a href="#why">Warum wir</a></li>
+    <li><a href="#reviews">Bewertungen</a></li>
+    <li><a href="#contact" class="nav-cta">Kontakt</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-inner">
+    <div class="hero-logo"><img src="Jan_technik.png" alt="Jan Technik"></div>
+    <h1>Ihr Handy-Experte<br>in <span>Lippstadt</span></h1>
+    <p>Professionelle Reparaturen, faire Preise für An- und Verkauf – schnell, zuverlässig und direkt vor Ort.</p>
+    <div class="hero-btns">
+      <a href="#contact" class="btn-primary">Jetzt Termin anfragen</a>
+      <a href="#services" class="btn-outline">Unsere Leistungen</a>
+    </div>
+    <div class="hero-badges">
+      <div class="badge"><div class="badge-icon"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1,5 4,8 9,2"/></svg></div>Gleichtags-Reparatur</div>
+      <div class="badge"><div class="badge-icon"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1,5 4,8 9,2"/></svg></div>An- &amp; Verkauf</div>
+      <div class="badge"><div class="badge-icon"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1,5 4,8 9,2"/></svg></div>Faire Preise</div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="section-head">
+    <div class="section-label">Was wir anbieten</div>
+    <h2 class="section-title">Unsere Leistungen</h2>
+    <p class="section-sub">Von der Display-Reparatur bis zum Handyankauf – alles aus einer Hand, schnell und professionell.</p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card"><span class="service-icon">📱</span><h3>Display-Reparatur</h3><p>Gesprungenes Display? Wir tauschen es noch am selben Tag – für iPhone, Samsung und viele weitere Modelle.</p></div>
+    <div class="service-card green"><span class="service-icon">🔋</span><h3>Akku-Austausch</h3><p>Mit einem neuen Original-Akku geben wir Ihrem Gerät neue Lebensdauer.</p></div>
+    <div class="service-card"><span class="service-icon">🛠️</span><h3>Hardware-Reparatur</h3><p>Defekte Ladebuchse, Kamera oder Lautsprecher? Wir diagnostizieren und reparieren zuverlässig.</p></div>
+    <div class="service-card green"><span class="service-icon">💰</span><h3>Handyankauf</h3><p>Wir kaufen gebrauchte Smartphones zu fairen, transparenten Preisen an.</p></div>
+    <div class="service-card"><span class="service-icon">🤝</span><h3>Handyverkauf</h3><p>Gebrauchte Smartphones – geprüft, aufbereitet und günstig erhältlich.</p></div>
+    <div class="service-card green"><span class="service-icon">🛡️</span><h3>Zubehör</h3><p>Hüllen, Panzerglas, Ladekabel und mehr – direkt vor Ort erhältlich.</p></div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section class="why" id="why">
+  <div class="why-grid">
+    <div>
+      <div class="section-label">Unsere Stärken</div>
+      <h2 class="section-title">Warum Jan Technik?</h2>
+      <p class="section-sub" style="margin-bottom: 2rem;">Wir sind Ihr lokaler Ansprechpartner – persönlich, schnell und mit echtem Fachwissen.</p>
+      <ul class="why-list">
+        <li class="why-item"><div class="check"><svg viewBox="0 0 14 14"><polyline points="2,7 5,10 12,3"/></svg></div><div class="why-item-text"><strong>Gleichtags-Reparatur</strong><span>Viele Reparaturen erledigen wir noch am selben Tag – ohne lange Wartezeit.</span></div></li>
+        <li class="why-item"><div class="check"><svg viewBox="0 0 14 14"><polyline points="2,7 5,10 12,3"/></svg></div><div class="why-item-text"><strong>Faire &amp; transparente Preise</strong><span>Keine versteckten Kosten – alles wird vorab klar kommuniziert.</span></div></li>
+        <li class="why-item"><div class="check"><svg viewBox="0 0 14 14"><polyline points="2,7 5,10 12,3"/></svg></div><div class="why-item-text"><strong>Lokaler Betrieb in Lippstadt</strong><span>Direkt am Bernhardbrunnen – kurze Wege, persönlicher Service.</span></div></li>
+        <li class="why-item"><div class="check"><svg viewBox="0 0 14 14"><polyline points="2,7 5,10 12,3"/></svg></div><div class="why-item-text"><strong>Erfahrenes Team</strong><span>Kompetente Beratung – von der Diagnose bis zur Übergabe.</span></div></li>
+        <li class="why-item"><div class="check"><svg viewBox="0 0 14 14"><polyline points="2,7 5,10 12,3"/></svg></div><div class="why-item-text"><strong>An- &amp; Verkauf</strong><span>Gebrauchte Geräte fair ankaufen und günstige Alternativen anbieten.</span></div></li>
+      </ul>
+    </div>
+    <div class="why-visual">
+      <div class="stat-row">
+        <div class="stat"><span class="stat-num">43+</span><span class="stat-label">Bewertungen</span></div>
+        <div class="stat"><span class="stat-num">3,9</span><span class="stat-label">Ø Sterne</span></div>
+      </div>
+      <div class="stat-row">
+        <div class="stat"><span class="stat-num">1 Tag</span><span class="stat-label">Reparaturzeit</span></div>
+        <div class="stat"><span class="stat-num">100%</span><span class="stat-label">Persönlich</span></div>
+      </div>
+      <div class="rating-stars">
+        <div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star half"></div>
+      </div>
+      <p style="font-size:0.85rem;color:rgba(255,255,255,0.6);margin-top:0.5rem;">Bewertet auf Google Maps</p>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="reviews" id="reviews">
+  <div class="section-head">
+    <div class="section-label">Was Kunden sagen</div>
+    <h2 class="section-title">Kundenbewertungen</h2>
+    <p class="section-sub">Echte Erfahrungen unserer Kunden – direkt von Google Maps.</p>
+  </div>
+  <div class="reviews-grid">
+    <div class="review-card">
+      <div class="review-stars"><span class="s">★</span><span class="s">★</span><span class="s">★</span><span class="s">★</span><span class="s">★</span></div>
+      <p class="review-text">„Habe ein iPhone 11 + Hülle und Panzerfolie für 320 € bekommen. War im super Zustand. Mitarbeiter super freundlich!"</p>
+      <div class="reviewer">Jolina J.</div><div class="review-date">vor einem Jahr · Google Maps</div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars"><span class="s">★</span><span class="s">★</span><span class="s">★</span><span class="s">★</span><span class="s">★</span></div>
+      <p class="review-text">„Super Service! iPhone Display hat er noch am selben Tag repariert!"</p>
+      <div class="reviewer">Zufriedener Kunde</div><div class="review-date">Google Maps</div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars"><span class="s">★</span><span class="s">★</span><span class="s">★</span><span class="s">★</span><span class="s">★</span></div>
+      <p class="review-text">„Sehr gute Preise und schnelle Reparatur!"</p>
+      <div class="reviewer">Zufriedener Kunde</div><div class="review-date">Google Maps</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="contact-inner">
+    <div>
+      <div class="section-label">So finden Sie uns</div>
+      <h2 class="section-title">Kontakt &amp; Standort</h2>
+      <p class="section-sub" style="margin-bottom:2rem;">Besuchen Sie uns direkt oder rufen Sie einfach an – wir freuen uns auf Sie!</p>
+      <div class="contact-item"><div class="contact-icon">📍</div><div class="contact-item-text"><strong>Adresse</strong><span>Am Bernhardbrunnen 2, 59555 Lippstadt</span></div></div>
+      <div class="contact-item"><div class="contact-icon">📞</div><div class="contact-item-text"><strong>Telefon</strong><a href="tel:015217845212">01521 7845212</a></div></div>
+      <div class="contact-item"><div class="contact-icon">🗺️</div><div class="contact-item-text"><strong>Google Maps Code</strong><span>M8CX+G3 Lippstadt</span></div></div>
+    </div>
+    <div>
+      <div class="hours-box">
+        <h4>Öffnungszeiten</h4>
+        <div class="hours-row"><span class="day">Montag – Freitag</span><span>10:00 – 18:00</span></div>
+        <div class="hours-row"><span class="day">Samstag</span><span>10:00 – 16:00</span></div>
+        <div class="hours-row"><span class="day">Sonntag</span><span>Geschlossen</span></div>
+      </div>
+      <div style="margin-top:1.5rem;">
+        <a href="https://maps.google.com/?q=Am+Bernhardbrunnen+2,+59555+Lippstadt" target="_blank" rel="noopener" class="btn-primary" style="width:100%;text-align:center;display:block;margin-bottom:0.8rem;">Route planen</a>
+        <a href="tel:015217845212" class="btn-outline" style="width:100%;text-align:center;display:block;">Jetzt anrufen</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <strong>Jan Technik – Reparatur &amp; An- und Verkauf</strong><br>
+  Am Bernhardbrunnen 2, 59555 Lippstadt &nbsp;|&nbsp; 01521 7845212
+  <div class="footer-links">
+    <a onclick="openModal('impressum')">Impressum</a>
+    <a onclick="openModal('datenschutz')">Datenschutzerklärung</a>
+    <a onclick="showCookieBanner()">Cookie-Einstellungen</a>
+  </div>
+  <p>&copy; 2025 Jan Technik. Alle Rechte vorbehalten.</p>
+</footer>
+
+<script>
+  function acceptCookies() { localStorage.setItem('jt_consent','yes'); hideBanner(); }
+  function declineCookies() { localStorage.setItem('jt_consent','min'); hideBanner(); }
+  function hideBanner() { document.getElementById('cookie-banner').classList.remove('visible'); }
+  function showCookieBanner() { document.getElementById('cookie-banner').classList.add('visible'); }
+  function openModal(id) { document.getElementById('modal-'+id).classList.add('open'); document.body.style.overflow='hidden'; }
+  function closeModal(id) { document.getElementById('modal-'+id).classList.remove('open'); document.body.style.overflow=''; }
+  function closeOutside(e, id) { if(e.target===document.getElementById('modal-'+id)) closeModal(id); }
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape'){['datenschutz','impressum'].forEach(closeModal);} });
+  window.addEventListener('load', function(){
+    if(!localStorage.getItem('jt_consent')) setTimeout(function(){ document.getElementById('cookie-banner').classList.add('visible'); }, 700);
+  });
+</script>
+</body>
+</html>
